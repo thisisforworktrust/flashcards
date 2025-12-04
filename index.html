@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hiragana Flashcards</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+  }
+  .flashcard {
+    width: 300px;
+    height: 400px;
+    perspective: 1000px;
+    margin-bottom: 20px;
+  }
+  .flashcard-inner {
+    width: 100%;
+    height: 100%;
+    border-radius: 15px;
+    background: white;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5em;
+    cursor: pointer;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+  }
+  .flipped .flashcard-inner {
+    transform: rotateY(180deg);
+  }
+  .flashcard-front, .flashcard-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  .flashcard-back {
+    background: #4CAF50;
+    color: white;
+    font-size: 2em;
+    transform: rotateY(180deg);
+    text-align: center;
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 1em;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="flashcard" id="card">
+  <div class="flashcard-inner" id="cardInner">
+    <div class="flashcard-front" id="front"></div>
+    <div class="flashcard-back" id="back"></div>
+  </div>
+</div>
+
+<div>
+  <button id="prev">⬅️ Previous</button>
+  <button id="shuffle">🔀 Shuffle</button>
+  <button id="next">➡️ Next</button>
+</div>
+
+<script>
+const hiragana = [
+  {char:"あ", pron:"a (ah)"},{char:"い", pron:"i (ee)"},{char:"う", pron:"u (oo)"},
+  {char:"え", pron:"e (eh)"},{char:"お", pron:"o (oh)"},{char:"か", pron:"ka (kah)"},
+  {char:"き", pron:"ki (kee)"},{char:"く", pron:"ku (koo)"},{char:"け", pron:"ke (keh)"},
+  {char:"こ", pron:"ko (koh)"},{char:"さ", pron:"sa (sah)"},{char:"し", pron:"shi (shee)"},
+  {char:"す", pron:"su (soo)"},{char:"せ", pron:"se (seh)"},{char:"そ", pron:"so (soh)"},
+  {char:"た", pron:"ta (tah)"},{char:"ち", pron:"chi (chee)"},{char:"つ", pron:"tsu (tsoo)"},
+  {char:"て", pron:"te (teh)"},{char:"と", pron:"to (toh)"},{char:"な", pron:"na (nah)"},
+  {char:"に", pron:"ni (nee)"},{char:"ぬ", pron:"nu (noo)"},{char:"ね", pron:"ne (neh)"},
+  {char:"の", pron:"no (noh)"},{char:"は", pron:"ha (hah)"},{char:"ひ", pron:"hi (hee)"},
+  {char:"ふ", pron:"fu (foo)"},{char:"へ", pron:"he (heh)"},{char:"ほ", pron:"ho (hoh)"},
+  {char:"ま", pron:"ma (mah)"},{char:"み", pron:"mi (mee)"},{char:"む", pron:"mu (moo)"},
+  {char:"め", pron:"me (meh)"},{char:"も", pron:"mo (moh)"},{char:"や", pron:"ya (yah)"},
+  {char:"ゆ", pron:"yu (yoo)"},{char:"よ", pron:"yo (yoh)"},{char:"ら", pron:"ra (rah)"},
+  {char:"り", pron:"ri (ree)"},{char:"る", pron:"ru (roo)"},{char:"れ", pron:"re (reh)"},
+  {char:"ろ", pron:"ro (roh)"},{char:"わ", pron:"wa (wah)"},{char:"を", pron:"wo (o)"},
+  {char:"ん", pron:"n (n)"}
+];
+
+let index = 0;
+
+const front = document.getElementById('front');
+const back = document.getElementById('back');
+const card = document.getElementById('card');
+
+function showCard(i) {
+  front.textContent = hiragana[i].char;
+  back.textContent = hiragana[i].pron;
+  card.classList.remove('flipped');
+}
+
+function nextCard() {
+  index = (index + 1) % hiragana.length;
+  showCard(index);
+}
+
+function prevCard() {
+  index = (index - 1 + hiragana.length) % hiragana.length;
+  showCard(index);
+}
+
+function shuffleCards() {
+  for (let i = hiragana.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [hiragana[i], hiragana[j]] = [hiragana[j], hiragana[i]];
+  }
+  index = 0;
+  showCard(index);
+}
+
+document.getElementById('next').addEventListener('click', nextCard);
+document.getElementById('prev').addEventListener('click', prevCard);
+document.getElementById('shuffle').addEventListener('click', shuffleCards);
+card.addEventListener('click', () => card.classList.toggle('flipped'));
+
+document.addEventListener('keydown', e => {
+  if(e.key === "ArrowRight") nextCard();
+  if(e.key === "ArrowLeft") prevCard();
+  if(e.key === " ") card.classList.toggle('flipped');
+});
+
+// Initialize first card
+showCard(index);
+</script>
+
+</body>
+</html>
